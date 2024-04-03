@@ -19,10 +19,10 @@ h1 {
 }
 p {
   text-align: center;
+  background-color: bisque;
 }
 label {
   text-align: center;
-  background-color: bisque;
 }
 select {
   text-align: center;
