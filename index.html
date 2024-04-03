@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <h1>💸Currency converter by Manos T.💸</h1>
+      <p id="form">
+        Fill in the sum you wish to convert:
+        <input id="conversion" type="text" @input="setSum" /> and:
+        <button @click="confirmInput">Enter</button>
+      </p>
+      <p>
+        Choose current currency:
+        <select
+          name="currency-before"
+          id="currency-before"
+          @change="setCurrentCurrency"
+        >
+          <option value="">-Select-</option>
+          <option v-for="(coin,i) in coins" :value="i">{{coin.name}}</option>
+        </select>
+      </p>
+      <p>
+        Choose currency to convert to:
+        <select @change="setFinalCurrency" name="currency" id="currency-after">
+          <option value="">-Select-</option>
+          <option v-for="(coin,i) in coins" :value="i">{{coin.name}}</option>
+        </select>
+      </p>
+      <p><button @click="convert">Convert</button></p>
+      <h3>
+        <p>Outcome of conversion: {{result}}</p>
+      </h3>
+    </div>
+    <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.js"></script>
+    <script src="currencies-convert.js"></script>
+  </body>
+</html>

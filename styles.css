@@ -1,0 +1,31 @@
+body {
+  display: contents;
+}
+label {
+  text-align: center;
+}
+h1 {
+  color: navy;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-size: xx-large;
+  background-color: bisque;
+  border-top-style: solid;
+  border-bottom-style: solid;
+  border-top-color: navy;
+  border-bottom-color: navy;
+  border-top-width: thick;
+  border-bottom-width: thick;
+  text-align: center;
+}
+p {
+  text-align: center;
+}
+label {
+  text-align: center;
+}
+select {
+  text-align: center;
+}
+button {
+  text-align: center;
+}
