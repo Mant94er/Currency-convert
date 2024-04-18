@@ -33,13 +33,13 @@ const manos = Vue.createApp({
           });
         });
     },
-    confirmInput() {
-      this.confirmedValue = this.value;
-      // console.log(this.confirmedValue);
-    },
+    // confirmInput() {
+    //   this.confirmedValue = this.value;
+    //   // console.log(this.confirmedValue);
+    // },
     setSum(e) {
       e.preventDefault();
-      this.value = e.target.value;
+      this.confirmedValue = e.target.value;
       // console.log(e.target.value);
     },
     setCurrentCurrency(e) {

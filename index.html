@@ -8,8 +8,8 @@
       <h1>💸Currency converter by Manos T.💸</h1>
       <p id="form">
         Fill in the sum you wish to convert:
-        <input id="conversion" type="text" @input="setSum" /> and:
-        <button @click="confirmInput">Enter</button>
+        <input id="conversion" type="text" @change="setSum" />
+        <!-- <button @click="confirmInput">Enter</button> -->
       </p>
       <p>
         Choose current currency:
