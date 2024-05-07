@@ -12,12 +12,14 @@
         <p>
           Choose current currency:
           <select
+            v-model="currentCurrency"
             name="currency-before"
             id="currency-before"
-            v-model="currentCurrency"
           >
             <option value="init">-Select-</option>
-            <option v-for="(coin, i) in coins" :key="i">{{ coin.name }}</option>
+            <option v-for="(coin, i) in coins" :key="i">
+              {{ coins[i].name }}
+            </option>
           </select>
         </p>
       </div>
@@ -26,7 +28,9 @@
           Choose currency to convert to:
           <select v-model="finalCurrency" name="currency" id="currency-after">
             <option value="init">-Select-</option>
-            <option v-for="(coin, i) in coins" :key="i">{{ coin.name }}</option>
+            <option v-for="(coin, i) in coins" :key="i">
+              {{ coins[i].name }}
+            </option>
           </select>
         </p>
       </div>
@@ -44,13 +48,7 @@ export default {
   data() {
     return {
       confirmedValue: null,
-      coins: [
-        { name: 'EUR', exchangeToEUR: 0, exchangeFromEUR: 0 },
-        { name: 'USD', exchangeToEUR: 0, exchangeFromEUR: 0 },
-        { name: 'JPY', exchangeToEUR: 0, exchangeFromEUR: 0 },
-        { name: 'TRY', exchangeToEUR: 0, exchangeFromEUR: 0 },
-        { name: 'GBP', exchangeToEUR: 0, exchangeFromEUR: 0 },
-      ],
+      coins: [],
       currentCurrency: 'init',
       finalCurrency: 'init',
       conversionTo: 0,
@@ -59,36 +57,25 @@ export default {
     };
   },
   methods: {
-    reachCurrency: async function () {
-      const that = this;
-      await fetch(
-        'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json'
+    reachCurrency() {
+      console.log('Hello');
+      fetch(
+        'https://currency-conversion-41c8a-default-rtdb.firebaseio.com/currencies.json'
       )
-        .then((data) => data.json())
-        .then((response) => {
-          that.coins.forEach((coin) => {
-            coin.exchangeFromEUR = response.eur[coin.name.toLowerCase()];
-            coin.exchangeToEUR = 1 / response.eur[coin.name.toLowerCase()];
-          });
+        .then((resp) => resp.json())
+        .then((data) => {
+          // const results = [];
+          for (const id in data) {
+            for (const coin in data[id]) {
+              this.coins.push({
+                name: data[id][coin].name,
+                exchangeToEUR: data[id][coin].exchangeToEUR,
+                exchangeFromEUR: data[id][coin].exchangeFromEUR,
+              });
+            }
+          }
         });
     },
-    // setSum(e) {
-    //   e.preventDefault();
-    //   this.confirmedValue = e.target.value;
-    //   if (!e.target.value) console.log('Well done!');
-    // },
-    // setCurrentCurrency(e) {
-    //   e.preventDefault();
-    //   const coined = this.coins.find((coin) => coin.name === e.target.value);
-    //   this.currentCurrency = coined.name;
-    //   this.conversionTo = coined.exchangeToEUR;
-    // },
-    // setFinalCurrency(e) {
-    //   e.preventDefault();
-    //   const coined = this.coins.find((coin) => coin.name === e.target.value);
-    //   this.finalCurrency = coined.name;
-    //   this.conversionFrom = coined.exchangeFromEUR;
-    // },
     convert() {
       const coin1 = this.coins.find(
         (coin) => coin.name === this.currentCurrency
@@ -96,10 +83,13 @@ export default {
       this.conversionTo = coin1.exchangeToEUR;
       const coin2 = this.coins.find((coin) => coin.name === this.finalCurrency);
       this.conversionFrom = coin2.exchangeFromEUR;
-      if (!this.confirmedValue) {
-        this.result = '';
-        return;
-      }
+
+      console.log(
+        this.currentCurrency,
+        this.finalCurrency,
+        this.conversionTo,
+        this.conversionFrom
+      );
       this.result = (
         this.confirmedValue *
         (this.conversionTo * this.conversionFrom)
