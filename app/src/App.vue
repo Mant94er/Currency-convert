@@ -61,7 +61,7 @@ export default {
       console.log('Hello');
       fetch(
         // 'https://currency-conversion-41c8a-default-rtdb.firebaseio.com/currencies.json'
-        'http://localhost:1994/'
+        '/currencies'
       )
         .then((resp) => resp.json())
         .then((data) => {
