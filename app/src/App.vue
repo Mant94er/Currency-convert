@@ -8,32 +8,20 @@
           <input id="conversion" type="number" v-model="confirmedValue" />
         </p>
       </div>
-      <div>
-        <p>
-          Choose current currency:
-          <select
-            v-model="currentCurrency"
-            name="currency-before"
-            id="currency-before"
-          >
-            <option value="init">-Select-</option>
-            <option v-for="(coin, i) in coins" :key="i">
-              {{ coins[i].name }}
-            </option>
-          </select>
-        </p>
-      </div>
-      <div>
-        <p>
-          Choose currency to convert to:
-          <select v-model="finalCurrency" name="currency" id="currency-after">
-            <option value="init">-Select-</option>
-            <option v-for="(coin, i) in coins" :key="i">
-              {{ coins[i].name }}
-            </option>
-          </select>
-        </p>
-      </div>
+      <coin-selection
+        :key="rerenderKey"
+        title="Choose current currency"
+        :coins="coins"
+        currencyStatus="currency-before"
+        @selected-coin="setCurrentCurrency"
+      ></coin-selection>
+      <coin-selection
+        :key="rerenderKey"
+        title="Choose currency to convert to"
+        :coins="coins"
+        currencyStatus="currency-after"
+        @selected-coin="setFinalCurrency"
+      ></coin-selection>
       <div>
         <p><button>Convert</button></p>
       </div>
@@ -43,8 +31,11 @@
     </h3>
   </div>
 </template>
+
 <script>
+import CoinSelection from './components/CoinSelection.vue';
 export default {
+  components: { CoinSelection },
   data() {
     return {
       confirmedValue: null,
@@ -54,9 +45,16 @@ export default {
       conversionTo: 0,
       conversionFrom: 0,
       result: 0,
+      rerenderKey: true,
     };
   },
   methods: {
+    setCurrentCurrency(coin) {
+      this.currentCurrency = coin;
+    },
+    setFinalCurrency(coin) {
+      this.finalCurrency = coin;
+    },
     reachCurrency() {
       console.log('Hello');
       fetch(
@@ -68,23 +66,17 @@ export default {
           console.log(data);
           this.coins = data;
         });
-      //   for (const id in data) {
-      //     for (const coin in data[id]) {
-      //       this.coins.push({
-      //         name: data[id][coin].name,
-      //         exchangeToEUR: data[id][coin].exchangeToEUR,
-      //         exchangeFromEUR: data[id][coin].exchangeFromEUR,
-      //       });
-      //     }
-      //   }
-      // });
     },
     convert() {
       const coin1 = this.coins.find(
         (coin) => coin.name === this.currentCurrency
       );
-      this.conversionTo = coin1.exchangeToEUR;
       const coin2 = this.coins.find((coin) => coin.name === this.finalCurrency);
+      if (!coin1 || !coin2) {
+        alert('Invalid currency!');
+        return;
+      }
+      this.conversionTo = coin1.exchangeToEUR;
       this.conversionFrom = coin2.exchangeFromEUR;
 
       console.log(
@@ -103,6 +95,7 @@ export default {
       setTimeout(() => {
         this.currentCurrency = this.finalCurrency = 'init';
         this.confirmedValue = null;
+        this.rerenderKey = !this.rerenderKey;
       }, 2000);
     },
   },
