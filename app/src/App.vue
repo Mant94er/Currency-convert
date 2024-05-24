@@ -29,13 +29,15 @@
     <h3>
       <p>Outcome of conversion: {{ result }}</p>
     </h3>
+    <add-currency @add-coin="addNewCurrency"></add-currency>
   </div>
 </template>
 
 <script>
+import AddCurrency from './components/AddCurrency.vue';
 import CoinSelection from './components/CoinSelection.vue';
 export default {
-  components: { CoinSelection },
+  components: { CoinSelection, AddCurrency },
   data() {
     return {
       confirmedValue: null,
@@ -49,6 +51,23 @@ export default {
     };
   },
   methods: {
+    addNewCurrency(curr, val) {
+      fetch('/currencies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: curr.trim().toUpperCase(),
+          exchangeToEUR: val,
+          exchangeFromEUR: 1 / val,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => (this.coins = data))
+        .catch((err) => console.error(err));
+    },
     setCurrentCurrency(coin) {
       this.currentCurrency = coin;
     },

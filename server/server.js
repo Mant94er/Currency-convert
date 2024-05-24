@@ -1,9 +1,10 @@
-import express from 'express';
-import fs from 'fs/promises';
+import express from "express";
+import fs from "fs/promises";
+import bodyParser from "body-parser";
 const app = express();
 const port = 1994;
-
-app.use(express.static('../app/dist'));
+app.use(express.static("../app/dist"));
+app.use(bodyParser.json());
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
@@ -19,16 +20,25 @@ app.listen(port, () => {
 //   return next();
 // });
 
-app.get('/currencies', async (req, res) => {
-  const buff = await fs.readFile('./currencies.json');
+app.get("/currencies", async (req, res) => {
+  const buff = await fs.readFile("./currencies.json");
   const json = buff.toString();
   const currencies = JSON.parse(json);
   res.json(currencies);
 });
-app.get('/coins', async (req, res) => {
-  const buff = await fs.readFile('./currencies.json');
+app.get("/coins", async (req, res) => {
+  const buff = await fs.readFile("./currencies.json");
   const json = buff.toString();
   const currencies = JSON.parse(json);
   const coins = currencies.map((obj) => obj.name);
   res.json(coins);
+});
+app.post("/currencies", async (req, res) => {
+  const buff = await fs.readFile("./currencies.json");
+  const json = buff.toString();
+  let currencies = JSON.parse(json);
+  currencies.push(req.body);
+  res.json(currencies);
+  const newJson = JSON.stringify(currencies);
+  await fs.writeFile("./currencies.json", newJson);
 });
