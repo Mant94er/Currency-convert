@@ -42,3 +42,33 @@ app.post("/currencies", async (req, res) => {
   const newJson = JSON.stringify(currencies);
   await fs.writeFile("./currencies.json", newJson);
 });
+app.post("/accounts", async (req, res) => {
+  const buff = await fs.readFile("./accounts.json");
+  const json = buff.toString();
+  let accounts = JSON.parse(json);
+  accounts.push(req.body);
+  res.json(req.body);
+  const newJson = JSON.stringify(accounts);
+  await fs.writeFile("./accounts.json", newJson);
+});
+app.post("/account", async (req, res) => {
+  const buff = await fs.readFile("./accounts.json");
+  const json = buff.toString();
+  let accounts = JSON.parse(json);
+  console.log(55, req.body, accounts);
+  if (accounts.includes(req.body)) {
+    res.json(req.body);
+  } else {
+    res.status(404).send("Something went wrong!");
+  }
+});
+app.post("/removals", async (req, res) => {
+  const buff = await fs.readFile("./currencies.json");
+  const json = buff.toString();
+  let currencies = JSON.parse(json);
+  const oldCoin = currencies.find((coin) => coin.name === req.body.name);
+  currencies = currencies.filter((coin) => coin !== oldCoin);
+  res.json(currencies);
+  const newJson = JSON.stringify(currencies);
+  await fs.writeFile("./currencies.json", newJson);
+});

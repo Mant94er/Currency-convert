@@ -1,28 +1,28 @@
 'use strict';
 import { createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
+import AddCurrency from './components/AddCurrency.vue';
+import HomePage from './components/HomePage.vue';
+import LogInPage from './components/LogInPage.vue';
+import SignUpPage from './components/SignUpPage.vue';
+import OpenPage from './components/OpenPage.vue';
 
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: OpenPage },
+    { path: '/manage', component: AddCurrency },
+    { path: '/login', component: LogInPage },
+    { path: '/signup', component: SignUpPage },
+    { path: '/home', component: HomePage },
+  ],
+});
 const manos = createApp(App);
+manos.use(router);
 
 manos.mount('#app');
-// (function () {
-//   fetch(
-//     'https://currency-conversion-41c8a-default-rtdb.firebaseio.com/currencies.json',
-//     {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify([
-//         { name: 'EUR', exchangeToEUR: 1, exchangeFromEUR: 1 },
-//         { name: 'USD', exchangeToEUR: 0.82, exchangeFromEUR: 1 / 0.82 },
-//         { name: 'JPY', exchangeToEUR: 0.02, exchangeFromEUR: 1 / 0.02 },
-//         { name: 'TRY', exchangeToEUR: 4.1, exchangeFromEUR: 1 / 4.1 },
-//         { name: 'GBP', exchangeToEUR: 2.08, exchangeFromEUR: 1 / 2.08 },
-//       ]),
-//     }
-//   );
-// })();
+
 if (module.hot) {
   module.hot.accept();
 }
