@@ -13,7 +13,7 @@
           <li v-if="withinAccount">
             <router-link to="/">Log Out</router-link>
           </li>
-          <li v-else>
+          <li>
             <router-link to="/login">Log In</router-link>
           </li>
         </ul>

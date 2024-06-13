@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <form @submit.prevent="logIn">
       <div>Username: <input type="text" v-model="user" /></div>
       <div>Password: <input type="text" v-model="password" /></div>
@@ -39,8 +38,8 @@ export default {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
-          this.$emit('log-in-');
-          this.$router.push('/home');
+          this.invalidUser = false;
+          this.$router.push({ path: '/home', query: { login: 'suc' } });
         })
         .catch((err) => {
           console.error(err);

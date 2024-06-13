@@ -53,10 +53,15 @@ app.post('/accounts', async (req, res) => {
 });
 app.post('/account', async (req, res) => {
   const buff = await fs.readFile('./accounts.json');
-  const json = buff.toString();
-  let accounts = JSON.parse(json);
-  console.log(55, req.body, accounts);
-  if (accounts.includes(req.body)) {
+  const jason = buff.toString();
+  let accounts = JSON.parse(jason);
+  const users = accounts.map((user) => user.user);
+  const passwords = accounts.map((pass) => pass.password);
+  if (
+    users.includes(req.body.user) &&
+    passwords.includes(req.body.password) &&
+    users.indexOf(req.body.user) === passwords.indexOf(req.body.password)
+  ) {
     res.json(req.body);
   } else {
     res.status(404).send('Something went wrong!');

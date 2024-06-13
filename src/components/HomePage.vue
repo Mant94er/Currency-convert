@@ -35,6 +35,7 @@
 <script>
 import CoinSelection from './CoinSelection.vue';
 export default {
+  emits: ['login-success'],
   components: { CoinSelection },
   data() {
     return {

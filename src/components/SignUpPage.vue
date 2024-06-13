@@ -13,6 +13,7 @@
 </template>
 <script>
 export default {
+  emits: ['login-success'],
   data() {
     return {
       newUser: '',
@@ -39,7 +40,8 @@ export default {
           .then((res) => res.json())
           .then((data) => {
             console.log(data);
-            this.$router.push('/home');
+            this.$emit('login-success', { login: 'suc' });
+            this.$router.push({ path: '/home', query: { login: 'suc' } });
           });
       }
     },

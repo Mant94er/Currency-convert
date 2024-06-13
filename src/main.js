@@ -18,6 +18,7 @@ const router = createRouter({
     { path: '/home', component: HomePage },
   ],
 });
+
 const manos = createApp(App);
 manos.use(router);
 

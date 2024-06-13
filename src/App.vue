@@ -2,7 +2,7 @@
   <div>
     <the-top-bar></the-top-bar>
     <main>
-      <router-view></router-view>
+      <router-view @loginSuccess="verifyUser"></router-view>
     </main>
   </div>
 </template>
@@ -11,6 +11,15 @@
 import TheTopBar from './components/TheTopBar.vue';
 export default {
   components: { TheTopBar },
+  methods: {
+    verifyUser(logIn) {
+      if (logIn === 'suc') {
+        console.log('User logged in');
+      } else {
+        console.log('Problem');
+      }
+    },
+  },
 };
 </script>
 <style>
