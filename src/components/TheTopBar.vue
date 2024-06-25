@@ -1,38 +1,55 @@
 <template>
   <header>
-    <div>
-      <div id="title">💸Currency converter💸</div>
-      <div id="list">
-        <ul>
-          <li v-if="withinAccount">
-            <router-link to="/home">Home</router-link>
-          </li>
-          <li v-if="withinAccount">
-            <router-link to="/manage">Manage</router-link>
-          </li>
-          <li v-if="withinAccount">
-            <router-link to="/">Log Out</router-link>
-          </li>
-          <li>
-            <router-link to="/login">Log In</router-link>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <nav>
+      <h3>💸Currency converter💸</h3>
+      <ul>
+        <li>
+          <router-link to="/home">Home</router-link>
+        </li>
+        <li>
+          <router-link v-if="store.isLoggedIn" to="/manage">Manage</router-link>
+        </li>
+        <li v-if="store.isLoggedIn">
+          <base-button link to="/">Log Out</base-button>
+        </li>
+        <li v-else>
+          <base-button link to="/login">Log In</base-button>
+        </li>
+      </ul>
+    </nav>
   </header>
 </template>
 <script>
+import { useStore } from '../store.js';
 export default {
   data() {
     return {
-      withinAccount: true,
+      store: useStore(),
     };
   },
-  mounted() {},
 };
 </script>
 
 <style scoped>
+h3 {
+  margin: 0;
+}
+header nav {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 ul {
   list-style: none;
   margin: 10px;
@@ -45,10 +62,7 @@ ul {
 li {
   margin: 0 1rem;
 }
-div {
-  display: inline-block;
-  overflow: hidden;
-}
+
 a {
   justify-content: right;
   align-content: right;
@@ -58,13 +72,5 @@ a.router-link-active {
   color: bisque;
   background-color: navy;
   border-color: bisque;
-}
-#title {
-  float: left;
-  transform: translateY(10px);
-}
-#list {
-  overflow: hidden;
-  float: right;
 }
 </style>

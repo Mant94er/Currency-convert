@@ -23,7 +23,9 @@
           @selected-coin="setFinalCurrency"
         ></coin-selection>
         <div>
-          <p><button>Convert</button></p>
+          <p>
+            <base-button>Convert</base-button>
+          </p>
         </div>
       </form>
       <h3>
@@ -140,17 +142,6 @@ h3 {
   border-bottom-color: navy;
   border-top-width: thick;
   border-bottom-width: thick;
-}
-button {
-  border-radius: 10px;
-  margin: 5px;
-  color: navy;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: large;
-  background-color: bisque;
-  border-color: navy;
-  border-top-width: thin;
-  border-bottom-width: thin;
 }
 div {
   margin: 8px;

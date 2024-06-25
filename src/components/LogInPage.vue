@@ -2,8 +2,8 @@
   <div>
     <form @submit.prevent="logIn">
       <div>Username: <input type="text" v-model="user" /></div>
-      <div>Password: <input type="text" v-model="password" /></div>
-      <button type="submit">Log In</button>
+      <div>Password: <input type="password" v-model="password" /></div>
+      <base-button type="submit">Log In</base-button>
       <p id="error" v-if="invalidUser">⛔User not found! Please try again</p>
       <p>
         Don't have an account yet?
@@ -13,10 +13,11 @@
   </div>
 </template>
 <script>
+import { useStore } from '../store.js';
 export default {
-  emits: ['log-in'],
   data() {
     return {
+      store: useStore(),
       user: '',
       password: '',
       invalidUser: false,
@@ -39,7 +40,8 @@ export default {
         .then((data) => {
           console.log(data);
           this.invalidUser = false;
-          this.$router.push({ path: '/home', query: { login: 'suc' } });
+          this.store.switchLogin();
+          this.$router.push({ path: '/home' });
         })
         .catch((err) => {
           console.error(err);

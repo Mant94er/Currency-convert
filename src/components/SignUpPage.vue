@@ -3,8 +3,8 @@
     <form @submit.prevent="signUp">
       <h2>Create New Account</h2>
       <div>Username: <input type="text" v-model="newUser" /></div>
-      <div>Password: <input type="text" v-model="newPassword" /></div>
-      <button type="submit">Submit</button>
+      <div>Password: <input type="password" v-model="newPassword" /></div>
+      <base-button type="submit">Submit</base-button>
       <p v-if="invalidUser">
         ⛔The username and/or password are not acceptable! Please try again
       </p>
@@ -12,10 +12,11 @@
   </div>
 </template>
 <script>
+import { useStore } from '../store.js';
 export default {
-  emits: ['login-success'],
   data() {
     return {
+      store: useStore(),
       newUser: '',
       newPassword: '',
       invalidUser: false,
@@ -40,8 +41,8 @@ export default {
           .then((res) => res.json())
           .then((data) => {
             console.log(data);
-            this.$emit('login-success', { login: 'suc' });
-            this.$router.push({ path: '/home', query: { login: 'suc' } });
+            this.store.switchLogin();
+            this.$router.push({ path: '/home' });
           });
       }
     },
@@ -68,17 +69,6 @@ form {
   border-bottom-color: navy;
   border-top-width: thick;
   border-bottom-width: thick;
-}
-button {
-  border-radius: 10px;
-  margin: 5px;
-  color: navy;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: large;
-  background-color: bisque;
-  border-color: navy;
-  border-top-width: thin;
-  border-bottom-width: thin;
 }
 div {
   margin: 8px;

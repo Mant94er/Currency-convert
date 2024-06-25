@@ -11,7 +11,9 @@
           <input type="number" v-model="newValue" step="any" />
         </p>
       </div>
-      <p><button>Add</button></p>
+      <p>
+        <base-button>Add</base-button>
+      </p>
     </form>
     <form @submit.prevent="removeCurrency" id="remove" name="remove">
       <h2>Delete currency</h2>
@@ -21,7 +23,7 @@
           {{ coin }}
         </option>
       </select>
-      <button>Remove</button>
+      <base-button>Remove</base-button>
     </form>
   </div>
 </template>
@@ -104,16 +106,5 @@ form {
   border-bottom-color: navy;
   border-top-width: thick;
   border-bottom-width: thick;
-}
-button {
-  border-radius: 10px;
-  margin: 5px;
-  color: navy;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: large;
-  background-color: bisque;
-  border-color: navy;
-  border-top-width: thin;
-  border-bottom-width: thin;
 }
 </style>
