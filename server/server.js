@@ -1,6 +1,7 @@
 import express from 'express';
 import fs from 'fs/promises';
 import bodyParser from 'body-parser';
+import bcrypt from 'bcrypt';
 const app = express();
 const port = 1994;
 app.use(express.static('../dist'));
@@ -8,64 +9,74 @@ app.use(bodyParser.json());
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
-// app.use((req, res, next) => {
-//   const allowedOrigins = ['http://localhost:8080'];
-//   const origin = req.headers.origin;
-//   if (allowedOrigins.includes(origin)) {
-//     res.setHeader('Access-Control-Allow-Origin', origin);
-//   }
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH');
-//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//   res.header('Access-Control-Allow-Credentials', true);
-//   return next();
-// });
-
 app.get('/currencies', async (req, res) => {
   const buff = await fs.readFile('./currencies.json');
   const json = buff.toString();
   const currencies = JSON.parse(json);
   res.json(currencies);
 });
-app.get('/coins', async (req, res) => {
-  const buff = await fs.readFile('./currencies.json');
-  const json = buff.toString();
-  const currencies = JSON.parse(json);
-  const coins = currencies.map((obj) => obj.name);
-  res.json(coins);
-});
 app.post('/currencies', async (req, res) => {
   const buff = await fs.readFile('./currencies.json');
   const json = buff.toString();
   let currencies = JSON.parse(json);
-  currencies.push(req.body);
-  res.json(currencies);
-  const newJson = JSON.stringify(currencies);
-  await fs.writeFile('./currencies.json', newJson);
+  const coins = currencies.map((coin) => coin.name);
+  if (coins.includes(req.body.name)) {
+    const updatedCurrency = currencies.find(
+      (cur) => cur.name === req.body.name
+    );
+    currencies.splice(currencies.indexOf(updatedCurrency), 1, req.body);
+    res.json(currencies);
+    const newJson = JSON.stringify(currencies);
+    await fs.writeFile('./currencies.json', newJson);
+  } else {
+    currencies.push(req.body);
+    res.json(currencies);
+    const newJson = JSON.stringify(currencies);
+    await fs.writeFile('./currencies.json', newJson);
+  }
 });
 app.post('/accounts', async (req, res) => {
   const buff = await fs.readFile('./accounts.json');
   const json = buff.toString();
   let accounts = JSON.parse(json);
-  accounts.push(req.body);
-  res.json(req.body);
-  const newJson = JSON.stringify(accounts);
-  await fs.writeFile('./accounts.json', newJson);
+  const users = accounts.map((user) => user.user);
+  if (users.includes(req.body.user)) {
+    res.status(404).send('Something went wrong!');
+    return;
+  }
+  const password = req.body.password;
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+      const newUser = { user: req.body.user, password: hash };
+      accounts.push(newUser);
+      res.json(newUser);
+      const newJson = JSON.stringify(accounts);
+      fs.writeFile('./accounts.json', newJson);
+    });
+  });
 });
 app.post('/account', async (req, res) => {
   const buff = await fs.readFile('./accounts.json');
   const jason = buff.toString();
-  let accounts = JSON.parse(jason);
-  const users = accounts.map((user) => user.user);
-  const passwords = accounts.map((pass) => pass.password);
-  if (
-    users.includes(req.body.user) &&
-    passwords.includes(req.body.password) &&
-    users.indexOf(req.body.user) === passwords.indexOf(req.body.password)
-  ) {
-    res.json(req.body);
+  const accounts = JSON.parse(jason);
+  const loggingUser = accounts.find((user) => user.user === req.body.user);
+  if (!!loggingUser) {
+    bcrypt.compare(req.body.password, loggingUser.password, (err, result) => {
+      if (err) res.status(404);
+      if (result) res.json(loggingUser);
+    });
   } else {
-    res.status(404).send('Something went wrong!');
+    res.status(404);
   }
+  // if (
+  //   users.includes(req.body.user) &&
+  //   passwords.includes(req.body.password) &&
+  //   users.indexOf(req.body.user) === passwords.indexOf(req.body.password)
+  // ) {
+  //   res.json(req.body);
+  // } else {
+  //   res.status(404).send('Something went wrong!');
+  // }
 });
 app.post('/removals', async (req, res) => {
   const buff = await fs.readFile('./currencies.json');

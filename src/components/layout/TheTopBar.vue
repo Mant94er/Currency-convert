@@ -3,13 +3,13 @@
     <nav>
       <h3>💸Currency converter💸</h3>
       <ul>
-        <li>
+        <li v-if="store.isLoggedIn">
           <router-link to="/home">Home</router-link>
         </li>
-        <li>
-          <router-link v-if="store.isLoggedIn" to="/manage">Manage</router-link>
-        </li>
         <li v-if="store.isLoggedIn">
+          <router-link to="/manage">Manage</router-link>
+        </li>
+        <li v-if="store.isLoggedIn" @click="logout">
           <base-button link to="/">Log Out</base-button>
         </li>
         <li v-else>
@@ -20,12 +20,18 @@
   </header>
 </template>
 <script>
-import { useStore } from '../store.js';
+import { useStore } from '../../store.js';
 export default {
   data() {
     return {
       store: useStore(),
     };
+  },
+  methods: {
+    logout() {
+      localStorage.clear();
+      this.store.switchLogin();
+    },
   },
 };
 </script>

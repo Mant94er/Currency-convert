@@ -6,13 +6,13 @@
       <div>Password: <input type="password" v-model="newPassword" /></div>
       <base-button type="submit">Submit</base-button>
       <p v-if="invalidUser">
-        ⛔The username and/or password are not acceptable! Please try again
+        ⛔The username is not availabe! Please try another one
       </p>
     </form>
   </div>
 </template>
 <script>
-import { useStore } from '../store.js';
+import { useStore } from '../../store.js';
 export default {
   data() {
     return {
@@ -40,9 +40,14 @@ export default {
         })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
+            this.invalidUser = false;
             this.store.switchLogin();
+            localStorage.setItem('user', JSON.stringify(data));
             this.$router.push({ path: '/home' });
+          })
+          .catch((err) => {
+            console.error(err);
+            this.invalidUser = true;
           });
       }
     },

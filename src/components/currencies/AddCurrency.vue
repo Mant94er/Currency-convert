@@ -1,18 +1,26 @@
 <template>
   <div>
     <form @submit.prevent="addNewCurrency" id="add" name="add">
-      <h2>Add Currency</h2>
+      <h2>Add/Update Currency</h2>
       <div>
-        <p>Name of currency: <input type="text" v-model="newCurrency" /></p>
+        <p>
+          Name of currency: <input type="text" v-model.trim="newCurrency" />
+        </p>
+        <p class="errors" v-if="!isValid">
+          ⛔ Please provide a valid name for currency
+        </p>
       </div>
       <div>
         <p>
           Conversion value:
-          <input type="number" v-model="newValue" step="any" />
+          <input type="number" v-model.trim="newValue" step="any" />
+        </p>
+        <p class="errors" v-if="!isValid">
+          ⛔ Please provide a valid value for conversion
         </p>
       </div>
       <p>
-        <base-button>Add</base-button>
+        <base-button>Add / Update</base-button>
       </p>
     </form>
     <form @submit.prevent="removeCurrency" id="remove" name="remove">
@@ -31,14 +39,19 @@
 export default {
   data() {
     return {
-      newCurrency: '',
-      newValue: '',
+      newCurrency: null,
+      newValue: null,
       coins: [],
       currencyToRemove: 'init',
+      isValid: true,
     };
   },
   methods: {
     addNewCurrency() {
+      if (!this.newCurrency || !this.newValue) {
+        this.isValid = false;
+        return;
+      }
       fetch('/currencies', {
         method: 'POST',
         headers: {
@@ -52,8 +65,10 @@ export default {
         }),
       })
         .then((res) => res.json())
-        .then((data) => console.log(data))
-        .catch((err) => console.error(err));
+        .then((data) => {
+          const coins = data.map((coin) => coin.name);
+          this.coins = coins;
+        });
     },
     reachCurrency() {
       fetch('/currencies')
@@ -75,7 +90,10 @@ export default {
         }),
       })
         .then((res) => res.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+          const coins = data.map((coin) => coin.name);
+          this.coins = coins;
+        })
         .catch((err) => console.error(err));
     },
   },
@@ -106,5 +124,8 @@ form {
   border-bottom-color: navy;
   border-top-width: thick;
   border-bottom-width: thick;
+}
+.errors {
+  color: red;
 }
 </style>

@@ -1,8 +1,10 @@
 <template>
   <div>
-    <form @submit.prevent="logIn">
-      <div>Username: <input type="text" v-model="user" /></div>
-      <div>Password: <input type="password" v-model="password" /></div>
+    <form @submit.prevent="logIn" id="login">
+      <div>Username: <input title="username" type="text" v-model="user" /></div>
+      <div>
+        Password: <input title="password" type="password" v-model="password" />
+      </div>
       <base-button type="submit">Log In</base-button>
       <p id="error" v-if="invalidUser">⛔User not found! Please try again</p>
       <p>
@@ -13,7 +15,7 @@
   </div>
 </template>
 <script>
-import { useStore } from '../store.js';
+import { useStore } from '../../store.js';
 export default {
   data() {
     return {
@@ -38,7 +40,7 @@ export default {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          localStorage.setItem('id', JSON.stringify(data));
           this.invalidUser = false;
           this.store.switchLogin();
           this.$router.push({ path: '/home' });

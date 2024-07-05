@@ -4,12 +4,12 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { createPinia } from 'pinia';
 import { useStore } from './store.js';
 import App from './App.vue';
-import AddCurrency from './components/AddCurrency.vue';
-import HomePage from './components/HomePage.vue';
-import LogInPage from './components/LogInPage.vue';
-import SignUpPage from './components/SignUpPage.vue';
-import OpenPage from './components/OpenPage.vue';
-import BaseButton from './components/BaseButton.vue';
+import AddCurrency from './components/currencies/AddCurrency.vue';
+import HomePage from './components/pages/HomePage.vue';
+import LogInPage from './components/pages/LogInPage.vue';
+import SignUpPage from './components/pages/SignUpPage.vue';
+import OpenPage from './components/pages/OpenPage.vue';
+import BaseButton from './components/layout/BaseButton.vue';
 
 const router = createRouter({
   history: createWebHistory(),

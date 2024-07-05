@@ -3,12 +3,16 @@
     <div>
       <form @submit.prevent="convert">
         <div class="sum">
-          <p>
+          <p @blur="resetErrors">
             Fill in the sum you wish to convert:
             <input id="conversion" type="number" v-model="confirmedValue" />
           </p>
+          <p v-if="!terminalValue" class="errors">
+            Please provide a positive rational number as a sum!
+          </p>
         </div>
         <coin-selection
+          @blur="resetErrors"
           :key="rerenderKey"
           title="Choose current currency"
           :coins="coins"
@@ -16,12 +20,14 @@
           @selected-coin="setCurrentCurrency"
         ></coin-selection>
         <coin-selection
+          @blur="resetErrors"
           :key="rerenderKey"
           title="Choose currency to convert to"
           :coins="coins"
           currencyStatus="currency-after"
           @selected-coin="setFinalCurrency"
         ></coin-selection>
+        <p v-if="!currenciesAreValid" class="errors">Invalid currency!</p>
         <div>
           <p>
             <base-button>Convert</base-button>
@@ -35,7 +41,7 @@
   </div>
 </template>
 <script>
-import CoinSelection from './CoinSelection.vue';
+import CoinSelection from '../currencies/CoinSelection.vue';
 export default {
   emits: ['login-success'],
   components: { CoinSelection },
@@ -49,10 +55,19 @@ export default {
       conversionFrom: 0,
       result: 0,
       rerenderKey: true,
-      terminalValue: '',
+      terminalValue: true,
+      currenciesAreValid: true,
     };
   },
   methods: {
+    resetErrors() {
+      if (this.confirmedValue) {
+        this.terminalValue = true;
+      }
+      if (this.currentCurrency !== 'init' && this.finalCurrency !== 'init') {
+        this.currenciesAreValid = true;
+      }
+    },
     setCurrentCurrency(coin) {
       this.currentCurrency = coin;
     },
@@ -71,14 +86,20 @@ export default {
         (coin) => coin.name === this.currentCurrency
       );
       const coin2 = this.coins.find((coin) => coin.name === this.finalCurrency);
+      if (!this.confirmedValue) {
+        this.terminalValue = false;
+      } else {
+        this.terminalValue = true;
+      }
       if (!coin1 || !coin2) {
-        alert('Invalid currency!');
+        this.currenciesAreValid = false;
         return;
+      } else {
+        this.currenciesAreValid = true;
       }
       this.conversionTo = coin1.exchangeToEUR;
       this.conversionFrom = coin2.exchangeFromEUR;
-      this.terminalValue = this.confirmedValue;
-      this.result = `${this.terminalValue} ${
+      this.result = `${this.confirmedValue} ${
         this.currentCurrency !== 'init' ? this.currentCurrency + ' =' : ''
       } ${
         this.confirmedValue *
@@ -94,7 +115,7 @@ export default {
       setTimeout(() => {
         this.currentCurrency = this.finalCurrency = 'init';
         this.confirmedValue = null;
-        this.terminalValue = null;
+        this.terminalValue = true;
         this.rerenderKey = !this.rerenderKey;
       }, 3000);
     },
@@ -145,5 +166,8 @@ h3 {
 }
 div {
   margin: 8px;
+}
+.errors {
+  color: red;
 }
 </style>
