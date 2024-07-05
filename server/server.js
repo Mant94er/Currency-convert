@@ -15,6 +15,11 @@ app.get('/currencies', async (req, res) => {
   const currencies = JSON.parse(json);
   res.json(currencies);
 });
+app.get('/*', (req, res) => {
+  res.sendFile(
+    'C:/Users/manwl/Downloads/Currency conversion project/dist/index.html'
+  );
+});
 app.post('/currencies', async (req, res) => {
   const buff = await fs.readFile('./currencies.json');
   const json = buff.toString();
