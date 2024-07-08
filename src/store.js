@@ -5,6 +5,7 @@ export const useStore = defineStore({
   state: () => ({
     isLoggedIn: false,
   }),
+
   actions: {
     switchLogin() {
       this.isLoggedIn = !this.isLoggedIn;

@@ -2,7 +2,7 @@
   <div>
     <the-top-bar></the-top-bar>
     <main>
-      <router-view></router-view>
+      <router-view :key="$route.fullPath"></router-view>
     </main>
   </div>
 </template>
@@ -12,7 +12,6 @@ import TheTopBar from './components/layout/TheTopBar.vue';
 
 export default {
   components: { TheTopBar },
-  methods: {},
   data() {
     return {};
   },

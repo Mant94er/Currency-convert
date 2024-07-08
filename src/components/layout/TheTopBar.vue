@@ -3,14 +3,16 @@
     <nav>
       <h3>💸Currency converter💸</h3>
       <ul>
-        <li v-if="store.isLoggedIn">
+        <li>
           <router-link to="/home">Home</router-link>
         </li>
-        <li v-if="store.isLoggedIn">
-          <router-link to="/manage">Manage</router-link>
+        <li v-if="isLoggedIn">
+          <router-link to="/manage" :src="require('../../images/edit-icon.jpg')"
+            >Manage</router-link
+          >
         </li>
-        <li v-if="store.isLoggedIn" @click="logout">
-          <base-button link to="/">Log Out</base-button>
+        <li v-if="isLoggedIn" @click="logout">
+          <base-button>Log Out</base-button>
         </li>
         <li v-else>
           <base-button link to="/login">Log In</base-button>
@@ -29,8 +31,13 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.clear();
       this.store.switchLogin();
+      this.$router.replace('/home');
+    },
+  },
+  computed: {
+    isLoggedIn() {
+      return this.store.isLoggedIn;
     },
   },
 };

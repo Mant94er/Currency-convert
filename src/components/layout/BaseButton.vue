@@ -26,6 +26,7 @@ export default {
 <style scoped>
 button {
   border-radius: 10px;
+  cursor: pointer;
   margin: 5px;
   color: navy;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;

@@ -1,29 +1,26 @@
 import express from 'express';
-import fs from 'fs/promises';
 import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt';
+import { dirname } from 'path';
+import {
+  readCurrencies,
+  writeCurrencies,
+} from './database/currencies/currencies.js';
+import { readAccounts, writeAccounts } from './database/accounts/accounts.js';
+
 const app = express();
 const port = 1994;
+const __dirname = dirname(process.cwd());
+
 app.use(express.static('../dist'));
 app.use(bodyParser.json());
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+
 app.get('/currencies', async (req, res) => {
-  const buff = await fs.readFile('./currencies.json');
-  const json = buff.toString();
-  const currencies = JSON.parse(json);
+  const currencies = await readCurrencies();
   res.json(currencies);
 });
-app.get('/*', (req, res) => {
-  res.sendFile(
-    'C:/Users/manwl/Downloads/Currency conversion project/dist/index.html'
-  );
-});
 app.post('/currencies', async (req, res) => {
-  const buff = await fs.readFile('./currencies.json');
-  const json = buff.toString();
-  let currencies = JSON.parse(json);
+  const currencies = await readCurrencies();
   const coins = currencies.map((coin) => coin.name);
   if (coins.includes(req.body.name)) {
     const updatedCurrency = currencies.find(
@@ -31,19 +28,22 @@ app.post('/currencies', async (req, res) => {
     );
     currencies.splice(currencies.indexOf(updatedCurrency), 1, req.body);
     res.json(currencies);
-    const newJson = JSON.stringify(currencies);
-    await fs.writeFile('./currencies.json', newJson);
+    writeCurrencies(currencies);
   } else {
     currencies.push(req.body);
     res.json(currencies);
-    const newJson = JSON.stringify(currencies);
-    await fs.writeFile('./currencies.json', newJson);
+    await writeCurrencies(currencies);
   }
 });
+app.post('/removals', async (req, res) => {
+  const currencies = await readCurrencies();
+  const oldCoin = currencies.find((coin) => coin.name === req.body.name);
+  const newCur = currencies.filter((coin) => coin !== oldCoin);
+  res.json(newCur);
+  await writeCurrencies(newCur);
+});
 app.post('/accounts', async (req, res) => {
-  const buff = await fs.readFile('./accounts.json');
-  const json = buff.toString();
-  let accounts = JSON.parse(json);
+  const accounts = await readAccounts();
   const users = accounts.map((user) => user.user);
   if (users.includes(req.body.user)) {
     res.status(404).send('Something went wrong!');
@@ -54,42 +54,40 @@ app.post('/accounts', async (req, res) => {
     bcrypt.hash(password, salt, (err, hash) => {
       const newUser = { user: req.body.user, password: hash };
       accounts.push(newUser);
+      res.cookie('id', JSON.stringify(newUser), {
+        expires: new Date(Date.now() + 3600000),
+        domain: 'http://localhost:1994',
+        path: '/',
+      });
       res.json(newUser);
-      const newJson = JSON.stringify(accounts);
-      fs.writeFile('./accounts.json', newJson);
+      writeAccounts(accounts);
     });
   });
 });
 app.post('/account', async (req, res) => {
-  const buff = await fs.readFile('./accounts.json');
-  const jason = buff.toString();
-  const accounts = JSON.parse(jason);
+  const accounts = await readAccounts();
   const loggingUser = accounts.find((user) => user.user === req.body.user);
   if (!!loggingUser) {
     bcrypt.compare(req.body.password, loggingUser.password, (err, result) => {
       if (err) res.status(404);
-      if (result) res.json(loggingUser);
+      if (result) {
+        res.cookie('id', JSON.stringify(loggingUser), {
+          expires: new Date(Date.now() + 3600000),
+          domain: 'http://localhost:1994',
+          path: '/',
+        });
+        res.json(loggingUser);
+      }
     });
   } else {
     res.status(404);
   }
-  // if (
-  //   users.includes(req.body.user) &&
-  //   passwords.includes(req.body.password) &&
-  //   users.indexOf(req.body.user) === passwords.indexOf(req.body.password)
-  // ) {
-  //   res.json(req.body);
-  // } else {
-  //   res.status(404).send('Something went wrong!');
-  // }
 });
-app.post('/removals', async (req, res) => {
-  const buff = await fs.readFile('./currencies.json');
-  const json = buff.toString();
-  let currencies = JSON.parse(json);
-  const oldCoin = currencies.find((coin) => coin.name === req.body.name);
-  currencies = currencies.filter((coin) => coin !== oldCoin);
-  res.json(currencies);
-  const newJson = JSON.stringify(currencies);
-  await fs.writeFile('./currencies.json', newJson);
+
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
+
+app.get('/*', (req, res) => {
+  res.sendFile(__dirname + '/dist/index.html');
 });

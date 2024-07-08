@@ -39,11 +39,10 @@ export default {
           }),
         })
           .then((res) => res.json())
-          .then((data) => {
+          .then(() => {
             this.invalidUser = false;
             this.store.switchLogin();
-            localStorage.setItem('user', JSON.stringify(data));
-            this.$router.push({ path: '/home' });
+            this.$router.replace({ path: '/home' });
           })
           .catch((err) => {
             console.error(err);
