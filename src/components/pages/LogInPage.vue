@@ -1,20 +1,21 @@
 <template>
   <div>
-    <form @submit.prevent="logIn" id="login">
+    <base-form @submit.prevent="logIn" id="login">
       <div>Username: <input title="username" type="text" v-model="user" /></div>
       <div>
         Password: <input title="password" type="password" v-model="password" />
       </div>
       <base-button type="submit">Log In</base-button>
-      <p id="error" v-if="invalidUser">⛔User not found! Please try again</p>
+      <p id="error" v-if="error">⛔ {{ error }}</p>
       <p>
         Don't have an account yet?
         <router-link to="signup">Sign Up!</router-link>
       </p>
-    </form>
+    </base-form>
   </div>
 </template>
 <script>
+import { login as loginUser } from '../../api.js';
 import { useStore } from '../../store.js';
 export default {
   data() {
@@ -22,31 +23,28 @@ export default {
       store: useStore(),
       user: '',
       password: '',
-      invalidUser: false,
+      error: null,
     };
   },
   methods: {
     logIn() {
-      fetch('/account', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          user: this.user,
-          password: this.password,
-        }),
-      })
+      this.error = null;
+      if (this.user.trim() === '' || this.password.trim() === '') {
+        this.error = 'Username and password are required!';
+      }
+      loginUser(this.user, this.password)
         .then((res) => res.json())
-        .then(() => {
-          this.store.switchLogin();
-          this.invalidUser = false;
-          this.$router.replace({ path: '/home' });
+        .then((data) => {
+          if (data.success) {
+            this.store.switchLogin();
+            return this.$router.replace({ path: '/home' });
+          }
+          if (data.error) {
+            this.error = data.error;
+          }
         })
         .catch((err) => {
-          console.error(err);
-          this.invalidUser = true;
+          this.error = err;
         });
     },
   },
@@ -54,25 +52,6 @@ export default {
 </script>
 
 <style scoped>
-form {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  margin: 1rem auto;
-  border-radius: 10px;
-  padding: 1rem;
-  text-align: center;
-  width: 90%;
-  max-width: 40rem;
-  color: navy;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: large;
-  background-color: bisque;
-  border-top-style: solid;
-  border-bottom-style: solid;
-  border-top-color: navy;
-  border-bottom-color: navy;
-  border-top-width: thick;
-  border-bottom-width: thick;
-}
 div {
   margin: 8px;
 }

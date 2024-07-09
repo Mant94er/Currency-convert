@@ -19,7 +19,9 @@
         </p>
         <p v-if="!isValid">⛔ Please provide a valid currency and/or value!</p>
       </section>
-      <base-button>OK</base-button>
+      <p>
+        <base-button>OK</base-button>
+      </p>
     </form>
   </dialog>
 </template>
@@ -118,20 +120,15 @@ div {
   z-index: 10;
 }
 dialog {
-  position: sticky;
-  top: 20vh;
-  left: 10%;
-  width: 80%;
+  width: 70%;
   z-index: 100;
   border: none;
   padding: 0;
   overflow: hidden;
-
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   margin: 1rem auto;
   border-radius: 10px;
   text-align: center;
-  /* width: 50%; */
   max-width: 40rem;
   color: navy;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
@@ -146,8 +143,5 @@ dialog {
 }
 section {
   padding: 1rem;
-}
-form button {
-  cursor: pointer;
 }
 </style>

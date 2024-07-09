@@ -8,7 +8,7 @@
     @close="closeDialog"
   ></base-dialog>
   <div>
-    <form id="manage">
+    <base-form id="manage">
       <h2>Manage Currencies</h2>
       <ul>
         <li v-for="coin in coins" :key="coin.name">
@@ -32,8 +32,11 @@
           </div>
         </li>
       </ul>
-      <base-button @click.prevent="openAddDialog">Add</base-button>
-    </form>
+      <p>
+
+        <base-button @click.prevent="openAddDialog">Add</base-button>
+      </p>
+    </base-form>
   </div>
 </template>
 <script>
@@ -95,25 +98,6 @@ export default {
 <style scoped>
 h2 {
   text-align: center;
-}
-form {
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  margin: 1rem auto;
-  border-radius: 10px;
-  text-align: center;
-  width: 40%;
-  max-width: 40rem;
-  color: navy;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: large;
-  background-color: #ffe4c4;
-  border-top-style: solid;
-  border-bottom-style: solid;
-  border-top-color: navy;
-  border-bottom-color: navy;
-  border-top-width: thick;
-  border-bottom-width: thick;
 }
 .currencies {
   background-color: white;

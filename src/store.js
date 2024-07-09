@@ -7,8 +7,12 @@ export const useStore = defineStore({
   }),
 
   actions: {
-    switchLogin() {
-      this.isLoggedIn = !this.isLoggedIn;
+    switchLogin(status) {
+      if (status) {
+        this.isLoggedIn = status;
+      } else {
+        this.isLoggedIn = !this.isLoggedIn;
+      }
     },
   },
 });

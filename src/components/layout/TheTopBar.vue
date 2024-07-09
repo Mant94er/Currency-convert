@@ -7,9 +7,7 @@
           <router-link to="/home">Home</router-link>
         </li>
         <li v-if="isLoggedIn">
-          <router-link to="/manage" :src="require('../../images/edit-icon.jpg')"
-            >Manage</router-link
-          >
+          <router-link to="/manage">Manage</router-link>
         </li>
         <li v-if="isLoggedIn" @click="logout">
           <base-button>Log Out</base-button>
@@ -22,6 +20,7 @@
   </header>
 </template>
 <script>
+import { logout as logoutUser } from '../../api.js';
 import { useStore } from '../../store.js';
 export default {
   data() {
@@ -30,9 +29,13 @@ export default {
     };
   },
   methods: {
-    logout() {
-      this.store.switchLogin();
-      this.$router.replace('/home');
+    async logout() {
+      const resp = await logoutUser();
+      const { logout } = await resp.json();
+      if (logout) {
+        this.store.switchLogin();
+        this.$router.replace('/home');
+      }
     },
   },
   computed: {

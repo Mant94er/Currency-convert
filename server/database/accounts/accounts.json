@@ -2,5 +2,9 @@
   {
     "user": "Admin",
     "password": "$2b$10$cfU4RExDMOzZ3gOue4Gfre/y09eOUmbi9X3GM8eMr20dmghvVGEE."
+  },
+  {
+    "user": "Admin2",
+    "password": "$2b$10$E.CDcfpzOo4znVwMUg4Lme0rIOsEL4MUBGg.XC.Ic6sGN64MBtCvy"
   }
 ]

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <form @submit.prevent="convert">
+      <base-form @submit.prevent="convert">
         <div class="sum">
           <p @blur="resetErrors">
             Fill in the sum you wish to convert:
@@ -33,7 +33,7 @@
             <base-button>Convert</base-button>
           </p>
         </div>
-      </form>
+      </base-form>
       <h3>
         <p>Outcome of conversion: {{ result }}</p>
       </h3>
@@ -126,32 +126,13 @@ export default {
 };
 </script>
 <style scoped>
-form {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  margin: 1rem auto;
-  border-radius: 10px;
-  padding: 1rem;
-  text-align: center;
-  width: 90%;
-  max-width: 40rem;
-  color: navy;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: large;
-  background-color: bisque;
-  border-top-style: solid;
-  border-bottom-style: solid;
-  border-top-color: navy;
-  border-bottom-color: navy;
-  border-top-width: thick;
-  border-bottom-width: thick;
-}
 h3 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   margin: 1rem auto;
   border-radius: 10px;
 
   text-align: center;
-  width: 70%;
+  width: 45%;
   max-width: 40rem;
   color: navy;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;

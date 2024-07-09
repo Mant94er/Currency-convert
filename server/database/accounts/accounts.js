@@ -1,5 +1,13 @@
 import fs from 'fs/promises';
 
+const getUserByName = async (email) => {
+  const accounts = await readAccounts();
+
+  return accounts.find(
+    (acc) => acc.user.toLocaleLowerCase() === email.toLocaleLowerCase()
+  );
+};
+
 const readAccounts = async () => {
   const buff = await fs.readFile('./database/accounts/accounts.json');
   const json = buff.toString();
@@ -12,4 +20,4 @@ const writeAccounts = async (array) => {
   await fs.writeFile('./database/accounts/accounts.json', json);
 };
 
-export { readAccounts, writeAccounts };
+export { readAccounts, writeAccounts, getUserByName };

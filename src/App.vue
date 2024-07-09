@@ -9,11 +9,20 @@
 
 <script>
 import TheTopBar from './components/layout/TheTopBar.vue';
+import { isAuthenticated } from './api.js';
+import { useStore } from './store.js';
 
 export default {
   components: { TheTopBar },
   data() {
     return {};
+  },
+  async mounted() {
+    const auth = await isAuthenticated();
+    if (auth) {
+      const { switchLogin } = useStore();
+      switchLogin(true);
+    }
   },
 };
 </script>
